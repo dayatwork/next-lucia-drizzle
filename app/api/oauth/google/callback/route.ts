@@ -32,9 +32,6 @@ export const GET = async (req: NextRequest) => {
   const codeVerifier = cookies().get("codeVerifier")?.value;
   const savedState = cookies().get("state")?.value;
 
-  // console.log("codeVerifier", codeVerifier);
-  // console.log("savedState", savedState);
-
   if (!codeVerifier || !savedState) {
     return Response.json({ error: "Invalid request" }, { status: 400 });
   }
@@ -70,10 +67,7 @@ export const GET = async (req: NextRequest) => {
         })
         .returning();
 
-      console.log("createdUser", createdUser);
-
       if (!createdUser || createdUser.length === 0) {
-        console.log("======== ROLLBACK 1 =========");
         tx.rollback();
         return {
           success: false,
@@ -95,10 +89,7 @@ export const GET = async (req: NextRequest) => {
         })
         .returning();
 
-      console.log("oauthAccount", oauthAccount);
-
       if (!oauthAccount || oauthAccount.length === 0) {
-        console.log("======== ROLLBACK 2 =========");
         tx.rollback();
         return {
           success: false,
