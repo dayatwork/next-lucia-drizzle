@@ -4,6 +4,7 @@ import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useCountdown } from "usehooks-ts";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +25,8 @@ import {
 } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { SignIn } from "./page";
+import { ResendToken, SignIn } from "./page";
+import { useEffect, useState } from "react";
 
 const signInSchema = z.object({
   email: z.string().email(),
@@ -35,12 +37,28 @@ export type FormInput = z.infer<typeof signInSchema>;
 
 export function SignInForm({
   signIn,
+  resendToken,
   redirectTo = "/app/home",
 }: {
   signIn: SignIn;
+  resendToken: ResendToken;
   redirectTo?: string;
 }) {
   const router = useRouter();
+  const [showResendEmail, setShowResendEmail] = useState(false);
+
+  const [count, { startCountdown, stopCountdown, resetCountdown }] =
+    useCountdown({
+      countStart: 60,
+      intervalMs: 1000,
+    });
+
+  useEffect(() => {
+    if (count === 0) {
+      stopCountdown();
+      resetCountdown();
+    }
+  }, [count, stopCountdown, resetCountdown]);
 
   const form = useForm<FormInput>({
     resolver: zodResolver(signInSchema),
@@ -64,13 +82,33 @@ export function SignInForm({
 
       router.push(redirectTo);
     } else {
-      form.setError("email", { message: res.error });
-      form.setError("password", { message: res.error });
+      if (res.errorKey === "email-not-verified") {
+        setShowResendEmail(true);
+      } else {
+        form.setError("email", { message: res.error });
+        form.setError("password", { message: res.error });
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: `Failed to login. ${res.error}`,
+        });
+      }
+    }
+  }
+
+  async function handleResendVerificationEmail() {
+    const res = await resendToken(form.getValues("email"));
+    if (res.success) {
+      startCountdown();
+
       toast({
-        variant: "destructive",
-        title: "Error",
-        description: `Failed to login. ${res.error}`,
+        variant: "default",
+        title: "Email sent",
+        description: res.message,
       });
+      // setShowResendEmail(false);
+    } else {
+      toast({ variant: "destructive", title: "Error", description: res.error });
     }
   }
 
@@ -130,6 +168,24 @@ export function SignInForm({
             </Button>
           </form>
         </Form>
+        {showResendEmail && (
+          <div className="flex flex-col items-center gap-1  mt-4">
+            <p
+              role="alert"
+              className="text-red-600 text-sm font-semibold bg-red-200 w-full text-center rounded py-1"
+            >
+              Email not verified!
+            </p>
+            <Button
+              variant="link"
+              className="w-full"
+              onClick={handleResendVerificationEmail}
+              disabled={count > 0 && count < 60}
+            >
+              Resend verfication email {count !== 60 && count}
+            </Button>
+          </div>
+        )}
         <div className="mt-4 text-center text-sm">
           {"Don't have an account? "}
           <Link href="/sign-up" className="underline">

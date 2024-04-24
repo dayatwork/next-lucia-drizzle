@@ -1,18 +1,21 @@
 import { cookies } from "next/headers";
 import { Argon2id } from "oslo/password";
 import { generateId } from "lucia";
+import { redirect } from "next/navigation";
+import jwt from "jsonwebtoken";
+import * as argon2 from "argon2";
 
 import db from "@/lib/db";
-import { userTable } from "@/lib/db/schema";
+import { emailVerificationTable, userTable } from "@/lib/db/schema";
 import { lucia, validateRequest } from "@/lib/auth";
 import { FormInput, SignUpForm } from "./sign-up-form";
-import { redirect } from "next/navigation";
 
 export type SignUp = ({ email, password, name }: FormInput) => Promise<
   | {
       success: true;
       data: {
         userId: string;
+        message: string;
       };
     }
   | { success: false; error: string }
@@ -41,23 +44,24 @@ export default async function SignUp() {
           name: userTable.name,
         });
 
-      const session = await lucia.createSession(userId, {
-        expiresIn: 60 * 60 * 24 * 7,
+      // Generate a random string 6 characters long
+      const code = Math.random().toString(36).substring(2, 8);
+
+      await db
+        .insert(emailVerificationTable)
+        .values({ id: generateId(15), userId, code, sentAt: new Date() });
+
+      const token = jwt.sign({ userId, email, code }, process.env.JWT_SECRET!, {
+        expiresIn: "5m",
       });
 
-      console.log({ session });
+      const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/verify-email?token=${token}`;
 
-      const sessionCookie = lucia.createSessionCookie(session.id);
-
-      cookies().set(
-        sessionCookie.name,
-        sessionCookie.value,
-        sessionCookie.attributes
-      );
+      console.log({ url });
 
       return {
         success: true,
-        data: { userId },
+        data: { userId, message: `Check your email for verification!` },
         error: null,
       };
     } catch (error: any) {

@@ -1,11 +1,13 @@
-import { Argon2id } from "oslo/password";
-
-import db from "@/lib/db";
-import { FormInput, SignInForm } from "./sign-in-form";
-import { eq } from "drizzle-orm";
-import { lucia, validateRequest } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { Argon2id } from "oslo/password";
+import { eq } from "drizzle-orm";
+import jwt from "jsonwebtoken";
+
+import db from "@/lib/db";
+import { lucia, validateRequest } from "@/lib/auth";
+import { emailVerificationTable } from "@/lib/db/schema";
+import { FormInput, SignInForm } from "./sign-in-form";
 
 export type SignIn = ({ email, password }: FormInput) => Promise<
   | {
@@ -14,7 +16,13 @@ export type SignIn = ({ email, password }: FormInput) => Promise<
         userId: string;
       };
     }
-  | { success: false; error: string }
+  | { success: false; error: string; errorKey?: string }
+>;
+
+export type ResendToken = (
+  email: string
+) => Promise<
+  { success: true; message: string } | { success: false; error: string }
 >;
 
 export default async function SignIn() {
@@ -40,6 +48,15 @@ export default async function SignIn() {
           success: false,
           data: null,
           error: `Invalid credentials`,
+        };
+      }
+
+      if (!foundUser.isEmailVerified) {
+        return {
+          success: false,
+          data: null,
+          error: "Email not verified",
+          errorKey: "email-not-verified",
         };
       }
 
@@ -82,13 +99,68 @@ export default async function SignIn() {
     }
   };
 
+  const resendToken: ResendToken = async (email) => {
+    "use server";
+    try {
+      const foundUser = await db.query.userTable.findFirst({
+        where: (table) => eq(table.email, email),
+      });
+
+      if (!foundUser) {
+        return {
+          success: false,
+          data: null,
+          error: `User not found`,
+        };
+      }
+
+      if (foundUser.isEmailVerified) {
+        return {
+          success: false,
+          data: null,
+          error: `Email already verified`,
+        };
+      }
+
+      // Generate a random string 6 characters long
+      const code = Math.random().toString(36).substring(2, 8);
+
+      await db
+        .update(emailVerificationTable)
+        .set({ code, sentAt: new Date() })
+        .where(eq(emailVerificationTable.userId, foundUser.id));
+
+      const token = jwt.sign(
+        { userId: foundUser.id, email, code },
+        process.env.JWT_SECRET!,
+        {
+          expiresIn: "5m",
+        }
+      );
+
+      const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/verify-email?token=${token}`;
+
+      console.log({ url });
+
+      return {
+        success: true,
+        message: "A verification email has been sent to your email",
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: `${error.message}`,
+      };
+    }
+  };
+
   if (user) {
     return redirect("/app/home");
   }
 
   return (
     <div className="flex items-center justify-center">
-      <SignInForm signIn={signIn} />
+      <SignInForm signIn={signIn} resendToken={resendToken} />
     </div>
   );
 }

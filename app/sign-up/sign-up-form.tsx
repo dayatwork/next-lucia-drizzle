@@ -44,8 +44,8 @@ export type FormInput = z.infer<typeof signUpSchema>;
 
 export function SignUpForm({
   signUp,
-  redirectTo = "/app/home",
-}: {
+}: // redirectTo = "/app/home",
+{
   signUp: SignUp;
   redirectTo?: string;
 }) {
@@ -70,10 +70,11 @@ export function SignUpForm({
       toast({
         variant: "default",
         title: "Success",
-        description: `New account created`,
+        description: res.data.message,
+        duration: 5000,
       });
 
-      router.push(redirectTo);
+      form.reset();
     } else {
       toast({
         variant: "destructive",
