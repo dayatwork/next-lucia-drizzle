@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: db
+    image: postgres:15.4
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - postgres:/var/lib/postgresql/inahef
+    ports:
+      - "54000:5432"
+
+volumes:
+  postgres:
+  redis:
