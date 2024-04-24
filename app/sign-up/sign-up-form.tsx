@@ -25,6 +25,7 @@ import {
 import { type SignUp } from "./page";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { createGoogleAuthorizationURL } from "../actions/auth.actions";
 
 const signUpSchema = z
   .object({
@@ -81,6 +82,15 @@ export function SignUpForm({
         title: "Error",
         description: `Failed to create new account. ${res.error}`,
       });
+    }
+  }
+
+  async function handleGoogleSignUp() {
+    const res = await createGoogleAuthorizationURL();
+    if (!res.success) {
+      toast({ variant: "destructive", title: "Error", description: res.error });
+    } else if (res.success && res.data) {
+      window.location.href = res.data.toString();
     }
   }
 
@@ -152,6 +162,16 @@ export function SignUpForm({
             </Button>
           </form>
         </Form>
+        <div className="text-center text-muted-foreground t text-sm mt-2">
+          or
+        </div>
+        <Button
+          variant="outline"
+          className="w-full mt-2"
+          onClick={handleGoogleSignUp}
+        >
+          Continue with google
+        </Button>
         <div className="mt-4 text-center text-sm">
           Already have an account?{" "}
           <Link href="/sign-in" className="underline">

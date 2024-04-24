@@ -1,6 +1,8 @@
 "use server";
 
 import { lucia, validateRequest } from "@/lib/auth";
+import { google } from "@/lib/oauth";
+import { generateCodeVerifier, generateState } from "arctic";
 import { cookies } from "next/headers";
 
 export async function signOut() {
@@ -25,6 +27,39 @@ export async function signOut() {
   } catch (error: any) {
     return {
       error: `${error.message}`,
+    };
+  }
+}
+
+export async function createGoogleAuthorizationURL() {
+  try {
+    const state = generateState();
+    const codeVerifier = generateCodeVerifier();
+
+    cookies().set("codeVerifier", codeVerifier, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    cookies().set("state", state, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    const authorizationURL = await google.createAuthorizationURL(
+      state,
+      codeVerifier,
+      { scopes: ["email", "profile"] }
+    );
+
+    return {
+      success: true,
+      data: authorizationURL.toString(),
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message,
     };
   }
 }

@@ -57,7 +57,6 @@ export const GET = async (req: NextRequest) => {
 
     return Response.redirect(redirectTo);
   } catch (error: any) {
-    console.log("error", error.message);
     return Response.json(
       { error: "Invalid token or expired token" },
       { status: 400 }

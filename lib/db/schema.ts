@@ -5,8 +5,22 @@ export const userTable = pgTable("user", {
   email: text("email").notNull().unique(),
   name: text("name").notNull(),
   hashedPassword: text("hashed_password"),
-  googleId: text("google_id").unique(),
   isEmailVerified: boolean("is_email_verified").notNull().default(false),
+});
+
+export const oauthAccountTable = pgTable("oauth_account", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => userTable.id),
+  provider: text("provider").notNull(),
+  providerUserId: text("provider_user_id").notNull(),
+  accessToken: text("access_token").notNull(),
+  refreshToken: text("refresh_token"),
+  expirestAt: timestamp("expires_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull(),
 });
 
 export const emailVerificationTable = pgTable("email_verification", {

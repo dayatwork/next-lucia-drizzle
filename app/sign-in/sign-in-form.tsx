@@ -27,6 +27,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { ResendToken, SignIn } from "./page";
 import { useEffect, useState } from "react";
+import { createGoogleAuthorizationURL } from "../actions/auth.actions";
 
 const signInSchema = z.object({
   email: z.string().email(),
@@ -112,6 +113,15 @@ export function SignInForm({
     }
   }
 
+  async function handleGoogleSignIn() {
+    const res = await createGoogleAuthorizationURL();
+    if (!res.success) {
+      toast({ variant: "destructive", title: "Error", description: res.error });
+    } else if (res.success && res.data) {
+      window.location.href = res.data.toString();
+    }
+  }
+
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
@@ -186,6 +196,16 @@ export function SignInForm({
             </Button>
           </div>
         )}
+        <div className="text-center text-muted-foreground t text-sm mt-2">
+          or
+        </div>
+        <Button
+          variant="outline"
+          className="w-full mt-2"
+          onClick={handleGoogleSignIn}
+        >
+          Continue with google
+        </Button>
         <div className="mt-4 text-center text-sm">
           {"Don't have an account? "}
           <Link href="/sign-up" className="underline">
