@@ -9,6 +9,7 @@ import db from "@/lib/db";
 import { emailVerificationTable, userTable } from "@/lib/db/schema";
 import { lucia, validateRequest } from "@/lib/auth";
 import { FormInput, SignUpForm } from "./sign-up-form";
+import { resend } from "@/lib/email";
 
 export type SignUp = ({ email, password, name }: FormInput) => Promise<
   | {
@@ -57,7 +58,20 @@ export default async function SignUp() {
 
       const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/verify-email?token=${token}`;
 
-      console.log({ url });
+      const { error } = await resend.emails.send({
+        from: "INAHEF <onboarding@resend.dev>",
+        to: [email],
+        subject: "Account Verification",
+        text: url,
+      });
+
+      if (error) {
+        return {
+          success: false,
+          data: null,
+          error: `${error.message}`,
+        };
+      }
 
       return {
         success: true,
