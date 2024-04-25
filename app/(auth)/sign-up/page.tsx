@@ -92,8 +92,8 @@ export default async function SignUp() {
   }
 
   return (
-    <div className="flex items-center justify-center">
-      <SignUpForm signUp={signUp} />
-    </div>
+    // <div className="flex items-center justify-center">
+    <SignUpForm signUp={signUp} />
+    // </div>
   );
 }

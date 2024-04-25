@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -26,8 +27,8 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { ResendToken, SignIn } from "./page";
-import { useEffect, useState } from "react";
-import { createGoogleAuthorizationURL } from "../actions/auth.actions";
+import { createGoogleAuthorizationURL } from "../../actions/auth.actions";
+import { FaGoogle } from "react-icons/fa";
 
 const signInSchema = z.object({
   email: z.string().email(),
@@ -123,7 +124,7 @@ export function SignInForm({
   }
 
   return (
-    <Card className="mx-auto max-w-sm">
+    <Card className="mx-auto max-w-sm w-full rounded-2xl">
       <CardHeader>
         <CardTitle className="text-xl">Login</CardTitle>
         <CardDescription>
@@ -171,7 +172,7 @@ export function SignInForm({
 
             <Button
               type="submit"
-              className="w-full"
+              className="w-full font-semibold"
               disabled={form.formState.isSubmitting}
             >
               Login
@@ -204,6 +205,7 @@ export function SignInForm({
           className="w-full mt-2"
           onClick={handleGoogleSignIn}
         >
+          <FaGoogle className="w-4 h-4 mr-2" />
           Continue with google
         </Button>
         <div className="mt-4 text-center text-sm">

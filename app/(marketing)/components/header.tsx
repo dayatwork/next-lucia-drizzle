@@ -14,7 +14,7 @@ export default function Header() {
             width={64}
             className="border border-neutral-600 rounded-full"
           />
-          <span className="text-white font-bold text-xl">INAHEF 2024</span>
+          <span className="font-bold text-xl">INAHEF 2024</span>
         </Link>
         <nav className="flex gap-6 text-sm font-semibold">
           <Link
@@ -44,10 +44,10 @@ export default function Header() {
           <p>Jakarta, Indonesia</p>
         </div>
         <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-600 to-blue-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-200"></div>
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-400 to-indigo-400 dark:from-indigo-600 dark:to-blue-600 rounded-lg blur opacity-30 dark:opacity-75 group-hover:opacity-50 dark:group-hover:opacity-100 transition duration-200"></div>
           <Link
             href="/tickets"
-            className="relative flex items-center px-4 py-2 rounded-lg leading-none text-sm font-semibold bg-black group-hover:text-indigo-400 transition"
+            className="relative flex items-center px-4 py-2 rounded-lg leading-none text-sm font-semibold dark:bg-black bg-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -69,7 +69,7 @@ export default function Header() {
         </div>
         <Link
           href="/sign-in"
-          className="h-10 w-10 flex items-center justify-center rounded-full border border-neutral-800 bg-black hover:bg-gradient-to-r hover:from-indigo-600 hover:to-blue-600 transition-all"
+          className="h-10 w-10 flex items-center justify-center rounded-full border border-neutral-300 dark:border-neutral-800 bg-white dark:bg-black hover:bg-gradient-to-r hover:from-indigo-400 hover:to-blue-400 dark:hover:from-indigo-600 dark:hover:to-blue-600 transition-all"
         >
           <span className="sr-only">Log in</span>
           <LogInIcon className="w-5 h-5" />

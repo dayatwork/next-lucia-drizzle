@@ -168,10 +168,10 @@ const schedule: Array<Day> = [
 function DaySummary({ day }: { day: Day }) {
   return (
     <>
-      <h3 className="text-2xl font-semibold tracking-tight text-white">
+      <h3 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-white">
         <time dateTime={day.dateTime}>{day.date}</time>
       </h3>
-      <p className="mt-1.5 text-base tracking-tight  text-neutral-400">
+      <p className="mt-1.5 text-base tracking-tight  text-neutral-600 dark:text-neutral-400">
         {day.summary}
       </p>
     </>
@@ -184,7 +184,7 @@ function TimeSlots({ day, className }: { day: Day; className?: string }) {
       role="list"
       className={cn(
         className,
-        "space-y-8 bg-white/5 px-10 py-14 text-center shadow-xl shadow-indigo-900/5 backdrop-blur rounded-3xl"
+        "space-y-8 bg-neutral-100 dark:bg-white/5 px-10 py-14 text-center shadow-xl shadow-neutral-200/5 dark:shadow-indigo-900/5 backdrop-blur rounded-3xl"
       )}
     >
       {day.timeSlots.map((timeSlot, timeSlotIndex) => (
@@ -195,7 +195,7 @@ function TimeSlots({ day, className }: { day: Day; className?: string }) {
           {timeSlotIndex > 0 && (
             <div className="mx-auto mb-8 h-px w-48 bg-indigo-400/10" />
           )}
-          <h4 className="text-lg font-semibold tracking-tight text-indigo-400">
+          <h4 className="text-lg font-semibold tracking-tight text-indigo-600 dark:text-indigo-400">
             {timeSlot.name}
           </h4>
           {timeSlot.description && (
@@ -203,7 +203,7 @@ function TimeSlots({ day, className }: { day: Day; className?: string }) {
               {timeSlot.description}
             </p>
           )}
-          <p className="mt-1 font-mono text-sm text-neutral-400">
+          <p className="mt-1 font-mono text-sm text-neutral-500 dark:text-neutral-400">
             <time dateTime={`${day.dateTime}T${timeSlot.start}-08:00`}>
               {timeSlot.start}
             </time>{" "}

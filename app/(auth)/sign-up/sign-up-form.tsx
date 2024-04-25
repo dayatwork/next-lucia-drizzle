@@ -4,6 +4,7 @@ import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,8 +25,8 @@ import {
 } from "@/components/ui/form";
 import { type SignUp } from "./page";
 import { toast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
-import { createGoogleAuthorizationURL } from "../actions/auth.actions";
+import { createGoogleAuthorizationURL } from "../../actions/auth.actions";
+import { FaGoogle } from "react-icons/fa";
 
 const signUpSchema = z
   .object({
@@ -95,7 +96,7 @@ export function SignUpForm({
   }
 
   return (
-    <Card className="mx-auto max-w-sm">
+    <Card className="mx-auto max-w-sm w-full rounded-2xl">
       <CardHeader>
         <CardTitle className="text-xl">Sign Up</CardTitle>
         <CardDescription>
@@ -157,7 +158,7 @@ export function SignUpForm({
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full font-semibold">
               Create an account
             </Button>
           </form>
@@ -170,6 +171,7 @@ export function SignUpForm({
           className="w-full mt-2"
           onClick={handleGoogleSignUp}
         >
+          <FaGoogle className="w-4 h-4 mr-2" />
           Continue with google
         </Button>
         <div className="mt-4 text-center text-sm">

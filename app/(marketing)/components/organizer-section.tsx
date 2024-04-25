@@ -27,7 +27,7 @@ export default function OrganizerSection() {
           <h3 className="text-xl font-semibold">
             Indonesian Association of Healthcare Engineering (IAHE)
           </h3>
-          <p className="mt-4 text-neutral-400">
+          <p className="mt-4 text-neutral-600 dark:text-neutral-400">
             The International Association of Healthcare Engineering (IAHE) is a
             professional organization comprising technical experts and
             corporations involved in the construction, operation, and

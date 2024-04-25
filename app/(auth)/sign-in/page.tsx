@@ -173,8 +173,8 @@ export default async function SignIn() {
   }
 
   return (
-    <div className="flex items-center justify-center">
-      <SignInForm signIn={signIn} resendToken={resendToken} />
-    </div>
+    // <div className="flex items-center justify-center">
+    <SignInForm signIn={signIn} resendToken={resendToken} />
+    // </div>
   );
 }
