@@ -4,12 +4,14 @@ import { Spotlight } from "@/components/spotlight";
 import { BackgroundBeams } from "@/components/background-beams";
 import Header from "./header";
 import { CountDown } from "./count-down";
+import Banner from "./banner";
 
 const Earth = dynamic(() => import("./earth"), { ssr: false });
 
 export default function HeroSection() {
   return (
     <div className="flex flex-col w-full min-h-screen relative">
+      <Banner />
       <Header />
       <Spotlight
         fill="white"

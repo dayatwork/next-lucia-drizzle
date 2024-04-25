@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { CircleUser, Menu, Package2, Search } from "lucide-react";
+import { Menu, Package2, Search } from "lucide-react";
 
 import { validateRequest } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default async function AppLayout({
   children,
@@ -32,6 +33,8 @@ export default async function AppLayout({
   children: React.ReactNode;
 }) {
   const { user } = await validateRequest();
+
+  console.log({ user });
 
   if (!user) {
     return redirect("/sign-in");
@@ -144,7 +147,11 @@ export default async function AppLayout({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
-                <CircleUser className="h-5 w-5" />
+                {/* <CircleUser className="h-5 w-5" /> */}
+                <Avatar>
+                  <AvatarImage src={user.photo || ""} />
+                  <AvatarFallback>{user.name[0]}</AvatarFallback>
+                </Avatar>
                 <span className="sr-only">Toggle user menu</span>
               </Button>
             </DropdownMenuTrigger>

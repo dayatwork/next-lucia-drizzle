@@ -64,6 +64,7 @@ export const GET = async (req: NextRequest) => {
           email: googleData.email,
           id: userId,
           isEmailVerified: true,
+          photo: googleData.picture,
         })
         .returning();
 

@@ -1,6 +1,7 @@
 import medicalCheckup from "@/assets/mdical-checkup.jpg";
 import exhibition from "@/assets/exhibition.jpg";
 import internationalCongress from "@/assets/international-congress.jpg";
+import seminar from "@/assets/seminar.jpg";
 import FeatureCard from "./feature-card";
 
 export default function FeatureSection() {
@@ -11,9 +12,10 @@ export default function FeatureSection() {
       <h2 className="mb-4 bg-gradient-to-r from-indigo-500 to-blue-500 bg-clip-text text-transparent text-4xl font-extrabold inline-block">
         Events
       </h2>
-      <div className="mt-6 grid grid-cols-3 gap-x-8">
+      <div className="mt-6 grid grid-cols-4 gap-x-6">
         <FeatureCard imageSrc={medicalCheckup} title="Free Medical Check-up" />
         <FeatureCard imageSrc={exhibition} title="Exhibition" />
+        <FeatureCard imageSrc={seminar} title="Seminar" />
         <FeatureCard
           imageSrc={internationalCongress}
           title="International Congress"

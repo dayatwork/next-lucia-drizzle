@@ -15,6 +15,14 @@ export const lucia = new Lucia(adapter, {
       secure: process.env.NODE_ENV === "production",
     },
   },
+  getUserAttributes: (attributes) => {
+    // console.log({ attributes });
+    return {
+      email: attributes.email,
+      name: attributes.name,
+      photo: attributes.photo,
+    };
+  },
 });
 
 export const validateRequest = cache(async () => {
@@ -45,6 +53,7 @@ export const validateRequest = cache(async () => {
   } catch {
     // Next.js throws error when attempting to set cookies when rendering page
   }
+
   return { user, session };
 });
 
@@ -52,5 +61,12 @@ export const validateRequest = cache(async () => {
 declare module "lucia" {
   interface Register {
     Lucia: typeof lucia;
+    DatabaseUserAttributes: DatabaseUserAttributes;
   }
+}
+
+interface DatabaseUserAttributes {
+  email: string;
+  name: string;
+  photo: string | null;
 }
