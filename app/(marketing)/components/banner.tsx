@@ -1,7 +1,16 @@
+"use client";
+
 import { X } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Banner() {
+  const [show, setShow] = useState(true);
+
+  if (!show) {
+    return null;
+  }
+
   return (
     <div className="relative isolate flex items-center gap-x-6 overflow-hidden bg-neutral-950 dark:bg-neutral-50 px-6 py-2.5 sm:px-3.5 sm:before:flex-1">
       <div
@@ -51,13 +60,14 @@ export default function Banner() {
         </Link>
       </div>
       <div className="flex flex-1 justify-end">
-        {/* <button
+        <button
           type="button"
           className="-m-3 p-3 focus-visible:outline-offset-[-4px]"
+          onClick={() => setShow(false)}
         >
           <span className="sr-only">Dismiss</span>
           <X className="h-5 w-5 text-gray-900" aria-hidden="true" />
-        </button> */}
+        </button>
       </div>
     </div>
   );
